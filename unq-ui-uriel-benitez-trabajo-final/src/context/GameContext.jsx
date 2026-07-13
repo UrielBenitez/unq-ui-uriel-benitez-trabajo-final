@@ -79,7 +79,7 @@ export function GameProvider({ children }) {
   };
 
   const jugarPalabra = async () => {
-    if (loading) return;
+    if (loading) return; // Lo agrego para evitar problemas al hacer click varias veces en el botón de jugar palabra...
     setLoading(true);
 
     try {
