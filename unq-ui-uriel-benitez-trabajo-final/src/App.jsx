@@ -22,10 +22,7 @@ function App() {
     return () => clearTimeout(timer);
   }, [tiempoRestante, juegoActivo]);
 
-  const puntajeTotal = useMemo(
-    () => encadenadas.reduce((total, p) => total + p.length, 0),
-    [encadenadas],
-  );
+  const puntajeTotal = encadenadas.reduce((total, p) => total + p.length, 0);
 
   const fueUtilizada = (palabraCandidata) => {
     return encadenadas.includes(palabraCandidata);
