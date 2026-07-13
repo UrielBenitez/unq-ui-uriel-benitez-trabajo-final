@@ -1,4 +1,5 @@
 import { useGame } from "../context/GameContext.jsx";
+import ListadoInverso from "./ListadoInverso.jsx";
 
 export default function JuegoInformacion() {
   const { encadenadas, tiempoRestante, puntajeTotal } = useGame();
@@ -9,13 +10,9 @@ export default function JuegoInformacion() {
     <>
       <p>Tiempo restante: {tiempoRestante} segundos</p>
       <p>Puntaje total: {puntajeTotal} puntos</p>
-      <ul>
-        {[...encadenadas].reverse().map((palabra) => (
-          <li
-            key={palabra}
-          >{`${palabra} suma ${palabra.length} puntos`}</li>
-        ))}
-      </ul>
+      <div className="palabras-encadenadas">
+        <ListadoInverso iterable={encadenadas} />
+      </div>
     </>
   );
 }

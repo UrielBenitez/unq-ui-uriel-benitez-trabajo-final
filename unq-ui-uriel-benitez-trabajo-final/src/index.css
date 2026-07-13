@@ -63,3 +63,8 @@ body {
   justify-content: center;
   height: 100%;
 }
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #f2b681 #fdfaf3;
+}
