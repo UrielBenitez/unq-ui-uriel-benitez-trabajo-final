@@ -20,8 +20,28 @@ function App() {
     return () => clearTimeout(timer);
   }, [tiempoRestante]);
 
+  const fueUtilizada = (palabra) => {
+    return encadenadas.includes(palabra);
+  };
+
+  const encadenaCorrectamente = (palabra) => {
+    const ultimaPalabra = encadenadas.at(-1);
+    return encadenadas.length === 0 || ultimaPalabra.at(-1) === palabra.at(0);
+  };
+
   const jugarPalabra = async () => {
     const palabraJugada = palabra.trim().toLowerCase();
+
+    if (fueUtilizada(palabraJugada)) {
+      setError(`La palabra "${palabraJugada}" ya fue utilizada`);
+      return;
+    }
+
+    if (!encadenaCorrectamente(palabraJugada)) {
+      setError(`La palabra "${palabraJugada}" no encadena correctamente`);
+      return;
+    }
+
     try {
       const existe = await existeLaPalabra(palabraJugada);
       if (!existe) {
