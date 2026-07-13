@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "./App.css";
 import { existeLaPalabra } from "./services/palabras.service.js";
 
@@ -21,6 +21,11 @@ function App() {
 
     return () => clearTimeout(timer);
   }, [tiempoRestante, juegoActivo]);
+
+  const puntajeTotal = useMemo(
+    () => encadenadas.reduce((total, p) => total + p.length, 0),
+    [encadenadas],
+  );
 
   const fueUtilizada = (palabraCandidata) => {
     return encadenadas.includes(palabraCandidata);
@@ -95,6 +100,7 @@ function App() {
       {encadenadas.length > 0 && (
         <>
           <p>Tiempo restante: {tiempoRestante} segundos</p>
+          <p>Puntaje total: {puntajeTotal} puntos</p>
           <ul>
             {[...encadenadas].reverse().map((palabra) => (
               <li
