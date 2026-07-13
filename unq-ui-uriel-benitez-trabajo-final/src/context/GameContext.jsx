@@ -1,5 +1,12 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { existeLaPalabra } from "../services/palabras.service.js";
+import { guardarPuntaje } from "../services/leaderboard.service.js";
 
 const GameContext = createContext();
 
@@ -15,11 +22,17 @@ export function GameProvider({ children }) {
 
   const puntajeTotal = encadenadas.reduce((total, p) => total + p.length, 0);
 
+  const finalizarJuego = useCallback(() => {
+    guardarPuntaje(puntajeTotal, encadenadas.length);
+    setPuntajeFinal(puntajeTotal);
+    setPantalla("finalizado");
+    setJuegoActivo(false);
+  }, [puntajeTotal, encadenadas.length]);
+
   useEffect(() => {
     if (pantalla !== "juego") return;
-    if (tiempoRestante <= 0) {
+    if (tiempoRestante <= 0 && encadenadas.length > 0) {
       finalizarJuego();
-      return;
     }
     if (encadenadas.length === 0) return;
     const timer = setTimeout(() => {
@@ -27,7 +40,7 @@ export function GameProvider({ children }) {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [tiempoRestante, juegoActivo, pantalla]);
+  }, [tiempoRestante, pantalla, encadenadas.length, finalizarJuego]);
 
   const fueUtilizada = (palabraCandidata) => {
     return encadenadas.includes(palabraCandidata);
@@ -39,12 +52,6 @@ export function GameProvider({ children }) {
       encadenadas.length === 0 ||
       ultimaPalabra.at(-1) === palabraCandidata.at(0)
     );
-  };
-
-  const finalizarJuego = () => {
-    setPuntajeFinal(puntajeTotal);
-    setPantalla("finalizado");
-    setJuegoActivo(false);
   };
 
   const comenzarJuego = () => {
@@ -63,6 +70,15 @@ export function GameProvider({ children }) {
     setTiempoRestante(15);
     setJuegoActivo(false);
     setPantalla("menu");
+  };
+
+  const irALeaderboard = () => {
+    setError("");
+    setPalabra("");
+    setEncadenadas([]);
+    setTiempoRestante(15);
+    setJuegoActivo(false);
+    setPantalla("leaderboard");
   };
 
   const volverAJugar = () => {
@@ -128,6 +144,7 @@ export function GameProvider({ children }) {
         comenzarJuego,
         volverAJugar,
         volverAlMenu,
+        irALeaderboard,
       }}
     >
       {children}

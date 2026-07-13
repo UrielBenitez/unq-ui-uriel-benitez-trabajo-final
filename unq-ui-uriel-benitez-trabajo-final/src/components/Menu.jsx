@@ -1,7 +1,7 @@
 import { useGame } from "../context/GameContext.jsx";
 
 export default function Menu() {
-  const { comenzarJuego } = useGame();
+  const { comenzarJuego, irALeaderboard } = useGame();
 
   return (
     <>
@@ -17,6 +17,7 @@ export default function Menu() {
         <p>Tenés 15 segundos por palabra. ¡Sumá puntos por cada letra!</p>
       </div>
       <button onClick={comenzarJuego}>Jugar</button>
+      <button onClick={irALeaderboard}>Leaderboard</button>
     </>
   );
 }

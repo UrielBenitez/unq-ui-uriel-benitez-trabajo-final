@@ -2,6 +2,7 @@ import { GameProvider, useGame } from "./context/GameContext.jsx";
 import Menu from "./components/Menu.jsx";
 import Juego from "./components/Juego.jsx";
 import ModalFin from "./components/ModalFin.jsx";
+import Leaderboard from "./components/Leaderboard.jsx";
 import "./App.css";
 
 function AppContent() {
@@ -12,6 +13,7 @@ function AppContent() {
       {pantalla === "menu" && <Menu />}
       {pantalla === "juego" && <Juego />}
       {pantalla === "finalizado" && <ModalFin />}
+      {pantalla === "leaderboard" && <Leaderboard />}
     </div>
   );
 }

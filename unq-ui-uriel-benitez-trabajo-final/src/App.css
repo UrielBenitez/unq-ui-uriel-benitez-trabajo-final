@@ -113,3 +113,75 @@ input {
 .puntaje {
   color: #d4af37;
 }
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.leaderboard h2 {
+  margin-top: -0.5rem;
+}
+
+.leaderboard-vacio {
+  color: #888;
+  font-style: italic;
+}
+
+.leaderboard-tabla {
+  width: 100%;
+  max-width: 400px;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.leaderboard-tabla th {
+  padding: 0.5rem;
+  border-bottom: 2px solid #ddd;
+  font-weight: 700;
+}
+
+.leaderboard-tabla td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.leaderboard-posicion {
+  font-size: 1.3rem;
+}
+
+.leaderboard-puntaje {
+  font-weight: 700;
+}
+
+.puesto-oro {
+  background: linear-gradient(135deg, #fff8dc, #ffe066);
+  color: #8b6914;
+}
+
+.puesto-plata {
+  background: linear-gradient(135deg, #f0f0f0, #d0d0d0);
+  color: #555;
+}
+
+.puesto-bronce {
+  background: linear-gradient(135deg, #fce4d6, #e8b88a);
+  color: #7a4a1f;
+}
+
+.leaderboard-scroll {
+  max-height: 270px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.leaderboard-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.leaderboard-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
