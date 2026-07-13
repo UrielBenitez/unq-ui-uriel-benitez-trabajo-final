@@ -13,12 +13,13 @@ function App() {
       setError("Se acabó el tiempo");
       return;
     }
+    if (encadenadas.length === 0) return;
     const timer = setTimeout(() => {
       setTiempoRestante((prev) => prev - 1);
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [tiempoRestante]);
+  }, [tiempoRestante, encadenadas]);
 
   const fueUtilizada = (palabra) => {
     return encadenadas.includes(palabra);
@@ -79,7 +80,18 @@ function App() {
         placeholder="Ingresá una palabra"
       />
       <button onClick={() => jugarPalabra()}>Agregar palabra</button>
-      <p>Tiempo restante: {tiempoRestante} segundos</p>
+      {encadenadas.length > 0 && (
+        <>
+          <p>Tiempo restante: {tiempoRestante} segundos</p>
+          <ul>
+            {[...encadenadas].reverse().map((palabra) => (
+              <li
+                key={palabra}
+              >{`${palabra} suma ${palabra.length} puntos`}</li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }
