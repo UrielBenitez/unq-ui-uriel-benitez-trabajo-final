@@ -26,10 +26,10 @@ export default function Juego() {
         placeholder="Ingresá una palabra"
       />
       {error && <p className="error">{error}</p>}
-      <button onClick={() => jugarPalabra()} disabled={loading}>
+      <button onClick={() => jugarPalabra()} disabled={loading || !palabra}>
         Agregar palabra
       </button>
-      <button onClick={() => volverAlMenu()}>Volver al menú</button>
+      <button onClick={() => volverAlMenu()}>Salir del juego</button>
       <JuegoInformacion />
     </>
   );
