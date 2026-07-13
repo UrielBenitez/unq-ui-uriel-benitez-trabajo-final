@@ -2,8 +2,14 @@ import { useGame } from "../context/GameContext.jsx";
 import JuegoInformacion from "./JuegoInformacion.jsx";
 
 export default function Juego() {
-  const { palabra, actualizarPalabra, error, loading, jugarPalabra } =
-    useGame();
+  const {
+    palabra,
+    actualizarPalabra,
+    error,
+    loading,
+    jugarPalabra,
+    volverAlMenu,
+  } = useGame();
 
   return (
     <>
@@ -23,6 +29,7 @@ export default function Juego() {
       <button onClick={() => jugarPalabra()} disabled={loading}>
         Agregar palabra
       </button>
+      <button onClick={() => volverAlMenu()}>Volver al menú</button>
       <JuegoInformacion />
     </>
   );
