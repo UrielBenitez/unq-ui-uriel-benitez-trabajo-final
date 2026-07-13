@@ -1,16 +1,9 @@
 import { useGame } from "../context/GameContext.jsx";
+import JuegoInformacion from "./JuegoInformacion.jsx";
 
 export default function Juego() {
-  const {
-    palabra,
-    actualizarPalabra,
-    error,
-    loading,
-    jugarPalabra,
-    encadenadas,
-    tiempoRestante,
-    puntajeTotal,
-  } = useGame();
+  const { palabra, actualizarPalabra, error, loading, jugarPalabra } =
+    useGame();
 
   return (
     <>
@@ -30,19 +23,7 @@ export default function Juego() {
       <button onClick={() => jugarPalabra()} disabled={loading}>
         Agregar palabra
       </button>
-      {encadenadas.length > 0 && (
-        <>
-          <p>Tiempo restante: {tiempoRestante} segundos</p>
-          <p>Puntaje total: {puntajeTotal} puntos</p>
-          <ul>
-            {[...encadenadas].reverse().map((palabra) => (
-              <li
-                key={palabra}
-              >{`${palabra} suma ${palabra.length} puntos`}</li>
-            ))}
-          </ul>
-        </>
-      )}
+      <JuegoInformacion />
     </>
   );
 }
