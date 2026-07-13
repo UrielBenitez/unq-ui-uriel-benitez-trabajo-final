@@ -1,20 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { existeLaPalabra } from "./services/palabras.service.js";
 
 function App() {
   const [error, setError] = useState("");
   const [palabra, setPalabra] = useState("");
+  const [encadenadas, setEncadenadas] = useState([]);
+  const [tiempoRestante, setTiempoRestante] = useState(15);
 
-  const validarPalabra = async () => {
+  useEffect(() => {
+    if (tiempoRestante <= 0) {
+      setError("Se acabó el tiempo");
+      return;
+    }
+    const timer = setTimeout(() => {
+      setTiempoRestante((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [tiempoRestante]);
+
+  const jugarPalabra = async () => {
+    const palabraJugada = palabra.trim().toLowerCase();
     try {
-      const existe = await existeLaPalabra(palabra);
+      const existe = await existeLaPalabra(palabraJugada);
       if (!existe) {
-        setError(`La palabra "${palabra}" no es válida`);
+        setError(`La palabra "${palabraJugada}" no es válida`);
       } else {
         setError("");
         setPalabra("");
-        console.log(`La palabra "${palabra}" es válida`);
+        setTiempoRestante(15);
+        setEncadenadas((prev) => [...prev, palabraJugada]);
+        console.log(`La palabra "${palabraJugada}" es válida`);
       }
     } catch (err) {
       setError(err.message);
@@ -36,12 +53,13 @@ function App() {
         }
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            validarPalabra();
+            jugarPalabra();
           }
         }}
         placeholder="Ingresá una palabra"
       />
-      <button onClick={() => validarPalabra()}>Agregar palabra</button>
+      <button onClick={() => jugarPalabra()}>Agregar palabra</button>
+      <p>Tiempo restante: {tiempoRestante} segundos</p>
     </div>
   );
 }
