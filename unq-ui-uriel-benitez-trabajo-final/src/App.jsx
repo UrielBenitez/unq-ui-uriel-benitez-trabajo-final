@@ -7,10 +7,11 @@ function App() {
   const [palabra, setPalabra] = useState("");
   const [encadenadas, setEncadenadas] = useState([]);
   const [tiempoRestante, setTiempoRestante] = useState(15);
+  const [juegoActivo, setJuegoActivo] = useState(false);
 
   useEffect(() => {
     if (tiempoRestante <= 0) {
-      setError("Se acabó el tiempo");
+      finalizarJuego();
       return;
     }
     if (encadenadas.length === 0) return;
@@ -19,15 +20,32 @@ function App() {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [tiempoRestante, encadenadas]);
+  }, [tiempoRestante, juegoActivo]);
 
-  const fueUtilizada = (palabra) => {
-    return encadenadas.includes(palabra);
+  const fueUtilizada = (palabraCandidata) => {
+    return encadenadas.includes(palabraCandidata);
   };
 
-  const encadenaCorrectamente = (palabra) => {
+  const encadenaCorrectamente = (palabraCandidata) => {
     const ultimaPalabra = encadenadas.at(-1);
-    return encadenadas.length === 0 || ultimaPalabra.at(-1) === palabra.at(0);
+    return (
+      encadenadas.length === 0 ||
+      ultimaPalabra.at(-1) === palabraCandidata.at(0)
+    );
+  };
+
+  const finalizarJuego = () => {
+    setError("Se acabó el tiempo");
+    setPalabra("");
+    setEncadenadas([]);
+    setJuegoActivo(false);
+  };
+
+  const reiniciarJuego = () => {
+    setError("");
+    setPalabra("");
+    setTiempoRestante(15);
+    setJuegoActivo(true);
   };
 
   const jugarPalabra = async () => {
@@ -48,20 +66,13 @@ function App() {
       if (!existe) {
         setError(`La palabra "${palabraJugada}" no es válida`);
       } else {
-        setError("");
-        setPalabra("");
-        setTiempoRestante(15);
+        reiniciarJuego();
         setEncadenadas((prev) => [...prev, palabraJugada]);
-        console.log(`La palabra "${palabraJugada}" es válida`);
       }
     } catch (err) {
       setError(err.message);
     }
   };
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
     <div className="main-container">
@@ -79,6 +90,7 @@ function App() {
         }}
         placeholder="Ingresá una palabra"
       />
+      {error && <p className="error">{error}</p>}
       <button onClick={() => jugarPalabra()}>Agregar palabra</button>
       {encadenadas.length > 0 && (
         <>
