@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { existeLaPalabra } from "./services/palabras.service.js";
 
@@ -9,8 +9,11 @@ function App() {
   const [encadenadas, setEncadenadas] = useState([]);
   const [tiempoRestante, setTiempoRestante] = useState(15);
   const [juegoActivo, setJuegoActivo] = useState(false);
+  const [pantalla, setPantalla] = useState("menu");
+  const [puntajeFinal, setPuntajeFinal] = useState(0);
 
   useEffect(() => {
+    if (pantalla !== "juego") return;
     if (tiempoRestante <= 0) {
       finalizarJuego();
       return;
@@ -21,7 +24,7 @@ function App() {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [tiempoRestante, juegoActivo]);
+  }, [tiempoRestante, juegoActivo, pantalla]);
 
   const puntajeTotal = encadenadas.reduce((total, p) => total + p.length, 0);
 
@@ -38,21 +41,40 @@ function App() {
   };
 
   const finalizarJuego = () => {
-    setError("Se acabó el tiempo. Partida finalizada.");
-    setPalabra("");
-    setEncadenadas([]);
+    setPuntajeFinal(puntajeTotal);
+    setPantalla("finalizado");
     setJuegoActivo(false);
   };
 
-  const reiniciarJuego = () => {
+  const comenzarJuego = () => {
     setError("");
     setPalabra("");
+    setEncadenadas([]);
     setTiempoRestante(15);
-    setJuegoActivo(true);
+    setJuegoActivo(false);
+    setPantalla("juego");
+  };
+
+  const volverAlMenu = () => {
+    setError("");
+    setPalabra("");
+    setEncadenadas([]);
+    setTiempoRestante(15);
+    setJuegoActivo(false);
+    setPantalla("menu");
+  };
+
+  const volverAJugar = () => {
+    setError("");
+    setPalabra("");
+    setEncadenadas([]);
+    setTiempoRestante(15);
+    setJuegoActivo(false);
+    setPantalla("juego");
   };
 
   const jugarPalabra = async () => {
-    if (loading) return; // Con esto evito que se intente jugar la misma palabra miestras se está jugando la anterior
+    if (loading) return;
     setLoading(true);
 
     try {
@@ -71,7 +93,10 @@ function App() {
       if (!existe) {
         setError(`La palabra "${palabraJugada}" no es válida`);
       } else {
-        reiniciarJuego();
+        setJuegoActivo(true);
+        setError("");
+        setPalabra("");
+        setTiempoRestante(15);
         setEncadenadas((prev) => [...prev, palabraJugada]);
       }
     } catch (err) {
@@ -83,36 +108,70 @@ function App() {
 
   return (
     <div className="main-container">
-      <h1>Palabras encadenadas</h1>
-      <input
-        type="text"
-        value={palabra}
-        onChange={(e) =>
-          setPalabra(e.target.value.replace(/[^A-Za-zÀ-ÿñÑ]/g, ""))
-        }
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            jugarPalabra();
-          }
-        }}
-        placeholder="Ingresá una palabra"
-      />
-      {error && <p className="error">{error}</p>}
-      <button onClick={() => jugarPalabra()} disabled={loading}>
-        Agregar palabra
-      </button>
-      {encadenadas.length > 0 && (
+      {pantalla === "menu" && (
         <>
-          <p>Tiempo restante: {tiempoRestante} segundos</p>
-          <p>Puntaje total: {puntajeTotal} puntos</p>
-          <ul>
-            {[...encadenadas].reverse().map((palabra) => (
-              <li
-                key={palabra}
-              >{`${palabra} suma ${palabra.length} puntos`}</li>
-            ))}
-          </ul>
+          <h1>Palabras encadenadas</h1>
+          <div className="explicacion">
+            <p>
+              Formá una cadena de palabras. Cada nueva palabra debe comenzar con
+              la última letra de la palabra anterior.
+            </p>
+            <p>
+              No podés repetir palabras y deben ser palabras válidas en español.
+            </p>
+            <p>Tenés 15 segundos por palabra. ¡Sumá puntos por cada letra!</p>
+          </div>
+          <button onClick={comenzarJuego}>Jugar</button>
         </>
+      )}
+
+      {pantalla === "juego" && (
+        <>
+          <h1>Palabras encadenadas</h1>
+          <input
+            type="text"
+            value={palabra}
+            onChange={(e) =>
+              setPalabra(e.target.value.replace(/[^A-Za-zÀ-ÿñÑ]/g, ""))
+            }
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                jugarPalabra();
+              }
+            }}
+            placeholder="Ingresá una palabra"
+          />
+          {error && <p className="error">{error}</p>}
+          <button onClick={() => jugarPalabra()} disabled={loading}>
+            Agregar palabra
+          </button>
+          {encadenadas.length > 0 && (
+            <>
+              <p>Tiempo restante: {tiempoRestante} segundos</p>
+              <p>Puntaje total: {puntajeTotal} puntos</p>
+              <ul>
+                {[...encadenadas].reverse().map((palabra) => (
+                  <li
+                    key={palabra}
+                  >{`${palabra} suma ${palabra.length} puntos`}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
+      )}
+
+      {pantalla === "finalizado" && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>¡Se acabó el tiempo!</h2>
+            <p>Puntaje final: {puntajeFinal} puntos</p>
+            <div className="modal-buttons">
+              <button onClick={volverAJugar}>Volver a jugar</button>
+              <button onClick={volverAlMenu}>Menú principal</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
