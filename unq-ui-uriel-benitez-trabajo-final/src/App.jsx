@@ -4,6 +4,7 @@ import { existeLaPalabra } from "./services/palabras.service.js";
 
 function App() {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [palabra, setPalabra] = useState("");
   const [encadenadas, setEncadenadas] = useState([]);
   const [tiempoRestante, setTiempoRestante] = useState(15);
@@ -37,7 +38,7 @@ function App() {
   };
 
   const finalizarJuego = () => {
-    setError("Se acabó el tiempo");
+    setError("Se acabó el tiempo. Partida finalizada.");
     setPalabra("");
     setEncadenadas([]);
     setJuegoActivo(false);
@@ -51,19 +52,21 @@ function App() {
   };
 
   const jugarPalabra = async () => {
-    const palabraJugada = palabra.trim().toLowerCase();
-
-    if (fueUtilizada(palabraJugada)) {
-      setError(`La palabra "${palabraJugada}" ya fue utilizada`);
-      return;
-    }
-
-    if (!encadenaCorrectamente(palabraJugada)) {
-      setError(`La palabra "${palabraJugada}" no encadena correctamente`);
-      return;
-    }
+    if (loading) return; // Con esto evito que se intente jugar la misma palabra miestras se está jugando la anterior
+    setLoading(true);
 
     try {
+      const palabraJugada = palabra.trim().toLowerCase();
+
+      if (fueUtilizada(palabraJugada)) {
+        setError(`La palabra "${palabraJugada}" ya fue utilizada`);
+        return;
+      }
+
+      if (!encadenaCorrectamente(palabraJugada)) {
+        setError(`La palabra "${palabraJugada}" no encadena correctamente`);
+        return;
+      }
       const existe = await existeLaPalabra(palabraJugada);
       if (!existe) {
         setError(`La palabra "${palabraJugada}" no es válida`);
@@ -73,6 +76,8 @@ function App() {
       }
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,7 +98,9 @@ function App() {
         placeholder="Ingresá una palabra"
       />
       {error && <p className="error">{error}</p>}
-      <button onClick={() => jugarPalabra()}>Agregar palabra</button>
+      <button onClick={() => jugarPalabra()} disabled={loading}>
+        Agregar palabra
+      </button>
       {encadenadas.length > 0 && (
         <>
           <p>Tiempo restante: {tiempoRestante} segundos</p>
