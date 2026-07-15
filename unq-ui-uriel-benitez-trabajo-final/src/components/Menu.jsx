@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { useGame } from "../context/GameContext.jsx";
 
 export default function Menu() {
-  const { comenzarJuego, irALeaderboard } = useGame();
+  const { comenzarJuego } = useGame();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -16,8 +18,10 @@ export default function Menu() {
         </p>
         <p>Tenés 15 segundos por palabra. ¡Sumá puntos por cada letra!</p>
       </div>
-      <button onClick={comenzarJuego}>Jugar</button>
-      <button onClick={irALeaderboard}>Leaderboard</button>
+      <button onClick={() => { comenzarJuego(); navigate("/juego") }}>
+        Jugar
+      </button>
+      <button onClick={() => navigate("/estadisticas")}>Leaderboard</button>
     </>
   );
 }

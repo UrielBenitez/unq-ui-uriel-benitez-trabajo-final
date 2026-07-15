@@ -1,4 +1,4 @@
-import { useGame } from "../context/GameContext.jsx";
+import { useNavigate } from "react-router-dom";
 import { obtenerPuntajes } from "../services/leaderboard.service.js";
 
 const MEDALLAS = { 0: "🥇", 1: "🥈", 2: "🥉" };
@@ -9,7 +9,7 @@ const CLASES_PUESTO = {
 };
 
 export default function Leaderboard() {
-  const { volverAlMenu } = useGame();
+  const navigate = useNavigate();
   const puntajes = obtenerPuntajes();
 
   return (
@@ -44,7 +44,7 @@ export default function Leaderboard() {
         )}
       </div>
 
-      <button onClick={volverAlMenu}>Volver al menú</button>
+      <button onClick={() => navigate("/")}>Volver al menú</button>
     </div>
   );
 }

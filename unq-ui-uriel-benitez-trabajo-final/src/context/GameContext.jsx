@@ -17,7 +17,7 @@ export function GameProvider({ children }) {
   const [encadenadas, setEncadenadas] = useState([]);
   const [tiempoRestante, setTiempoRestante] = useState(15);
   const [juegoActivo, setJuegoActivo] = useState(false);
-  const [pantalla, setPantalla] = useState("menu");
+  const [finalizado, setFinalizado] = useState(false);
   const [puntajeFinal, setPuntajeFinal] = useState(0);
 
   const puntajeTotal = encadenadas.reduce((total, p) => total + p.length, 0);
@@ -25,12 +25,12 @@ export function GameProvider({ children }) {
   const finalizarJuego = useCallback(() => {
     guardarPuntaje(puntajeTotal, encadenadas.length);
     setPuntajeFinal(puntajeTotal);
-    setPantalla("finalizado");
+    setFinalizado(true);
     setJuegoActivo(false);
   }, [puntajeTotal, encadenadas.length]);
 
   useEffect(() => {
-    if (pantalla !== "juego") return;
+    if (!juegoActivo) return;
     if (tiempoRestante <= 0 && encadenadas.length > 0) {
       finalizarJuego();
     }
@@ -40,7 +40,7 @@ export function GameProvider({ children }) {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [tiempoRestante, pantalla, encadenadas.length, finalizarJuego]);
+  }, [tiempoRestante, juegoActivo, encadenadas.length, finalizarJuego]);
 
   const fueUtilizada = (palabraCandidata) => {
     return encadenadas.includes(palabraCandidata);
@@ -60,25 +60,7 @@ export function GameProvider({ children }) {
     setEncadenadas([]);
     setTiempoRestante(15);
     setJuegoActivo(false);
-    setPantalla("juego");
-  };
-
-  const volverAlMenu = () => {
-    setError("");
-    setPalabra("");
-    setEncadenadas([]);
-    setTiempoRestante(15);
-    setJuegoActivo(false);
-    setPantalla("menu");
-  };
-
-  const irALeaderboard = () => {
-    setError("");
-    setPalabra("");
-    setEncadenadas([]);
-    setTiempoRestante(15);
-    setJuegoActivo(false);
-    setPantalla("leaderboard");
+    setFinalizado(false);
   };
 
   const volverAJugar = () => {
@@ -87,7 +69,7 @@ export function GameProvider({ children }) {
     setEncadenadas([]);
     setTiempoRestante(15);
     setJuegoActivo(false);
-    setPantalla("juego");
+    setFinalizado(false);
   };
 
   const actualizarPalabra = (valor) => {
@@ -95,7 +77,7 @@ export function GameProvider({ children }) {
   };
 
   const jugarPalabra = async () => {
-    if (loading) return; // Lo agrego para evitar problemas al hacer click varias veces en el botón de jugar palabra...
+    if (loading) return;
     setLoading(true);
 
     try {
@@ -136,15 +118,13 @@ export function GameProvider({ children }) {
         encadenadas,
         tiempoRestante,
         juegoActivo,
-        pantalla,
+        finalizado,
         puntajeFinal,
         puntajeTotal,
         actualizarPalabra,
         jugarPalabra,
         comenzarJuego,
         volverAJugar,
-        volverAlMenu,
-        irALeaderboard,
       }}
     >
       {children}

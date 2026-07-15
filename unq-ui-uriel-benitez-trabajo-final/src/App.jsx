@@ -1,27 +1,20 @@
-import { GameProvider, useGame } from "./context/GameContext.jsx";
+import { Routes, Route } from "react-router-dom";
+import { GameProvider } from "./context/GameContext.jsx";
 import Menu from "./components/Menu.jsx";
 import Juego from "./components/Juego.jsx";
-import ModalFin from "./components/ModalFin.jsx";
 import Leaderboard from "./components/Leaderboard.jsx";
 import "./App.css";
-
-function AppContent() {
-  const { pantalla } = useGame();
-
-  return (
-    <div className="main-container">
-      {pantalla === "menu" && <Menu />}
-      {pantalla === "juego" && <Juego />}
-      {pantalla === "finalizado" && <ModalFin />}
-      {pantalla === "leaderboard" && <Leaderboard />}
-    </div>
-  );
-}
 
 export default function App() {
   return (
     <GameProvider>
-      <AppContent />
+      <div className="main-container">
+        <Routes>
+          <Route path="/" element={<Menu />} />
+          <Route path="/juego" element={<Juego />} />
+          <Route path="/estadisticas" element={<Leaderboard />} />
+        </Routes>
+      </div>
     </GameProvider>
   );
 }

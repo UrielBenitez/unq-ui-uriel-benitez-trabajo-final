@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { useGame } from "../context/GameContext.jsx";
 
 export default function ModalFin() {
-  const { puntajeFinal, volverAJugar, volverAlMenu, encadenadas } = useGame();
+  const { puntajeFinal, volverAJugar, encadenadas } = useGame();
+  const navigate = useNavigate();
 
   return (
     <div className="modal-overlay">
@@ -18,8 +20,10 @@ export default function ModalFin() {
           </ul>
         </div>
         <div className="modal-buttons">
-          <button onClick={volverAJugar}>Volver a jugar</button>
-          <button onClick={volverAlMenu}>Menú principal</button>
+          <button onClick={() => { volverAJugar(); navigate("/juego") }}>
+            Volver a jugar
+          </button>
+          <button onClick={() => navigate("/")}>Menú principal</button>
         </div>
       </div>
     </div>

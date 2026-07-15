@@ -1,5 +1,7 @@
+import { useNavigate } from "react-router-dom";
 import { useGame } from "../context/GameContext.jsx";
 import JuegoInformacion from "./JuegoInformacion.jsx";
+import ModalFin from "./ModalFin.jsx";
 
 export default function Juego() {
   const {
@@ -8,8 +10,13 @@ export default function Juego() {
     error,
     loading,
     jugarPalabra,
-    volverAlMenu,
+    finalizado,
   } = useGame();
+  const navigate = useNavigate();
+
+  if (finalizado) {
+    return <ModalFin />;
+  }
 
   return (
     <>
@@ -29,7 +36,7 @@ export default function Juego() {
       <button onClick={() => jugarPalabra()} disabled={loading || !palabra}>
         Agregar palabra
       </button>
-      <button onClick={() => volverAlMenu()}>Salir del juego</button>
+      <button onClick={() => navigate("/")}>Salir del juego</button>
       <JuegoInformacion />
     </>
   );
