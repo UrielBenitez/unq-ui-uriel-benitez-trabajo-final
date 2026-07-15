@@ -94,7 +94,7 @@ export function GameProvider({ children }) {
       }
       const existe = await existeLaPalabra(palabraJugada);
       if (!existe) {
-        setError(`La palabra "${palabraJugada}" no es válida`);
+        setError(`La palabra "${palabraJugada}" no existe en el diccionario`);
       } else {
         setJuegoActivo(true);
         setError("");
